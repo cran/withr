@@ -1,12 +1,12 @@
-80886f95f2c000c4b8de9953f45faa17 *DESCRIPTION
+a07e772cc25d29736891b8273060dec5 *DESCRIPTION
 8c9b6c98df3a7ac762169c0fbe6985c1 *NAMESPACE
-07aedf3a1dff792bd57b488bb1a65c80 *NEWS.md
+f0e973cb622fc701d9c33c5438f7072c *NEWS.md
 b3ec11ee76b339c4d2ae9e409721039c *R/collate.R
 13ed0fd71ee35cae21d9da32ef81d00b *R/dir.R
 e202b586b599ebd825c856567615b8c7 *R/env.R
 a5ea25ec83c131d9f364d44be7ebe997 *R/libpaths.R
 d5e3df31efc160218e5e41f47d70f00a *R/locale.R
-90f1ff1cf6f20ac6d9cd6a96b678aeca *R/makevars.R
+ededa5297b84820d841825597d7a2340 *R/makevars.R
 3a7ad0bd8fc47af29778f0dcde2d8551 *R/options.R
 7ae96d23abe7df158000f77a73aa1580 *R/par.R
 a02e5528c7efb2d98360ecd6e19bb488 *R/path.R
@@ -21,7 +21,7 @@ c94a2337fbe854529f7d4126c1e2b07a *man/with_dir.Rd
 815437f9ada3c2a392240a5a68f06f63 *man/with_envvar.Rd
 7c812b458155b87f1454b21beba86ba5 *man/with_libpaths.Rd
 14e4745b18998007d2675ec056ba89e5 *man/with_locale.Rd
-90cc043b6c978a60adb1995d35b6551d *man/with_makevars.Rd
+8f182360b41388afa8d01b038c0985be *man/with_makevars.Rd
 049733066a626635021b6a2b09f61add *man/with_options.Rd
 b022e5b9b3c042adf806a00571d1c9b7 *man/with_par.Rd
 74bf724782cd546869a094bce6f2a157 *man/with_path.Rd
@@ -30,4 +30,4 @@ aa43d30a4a0404881041b3c7b193a000 *man/with_sink.Rd
 dc4ff003917591c5db30c32a80f17c5c *man/withr.Rd
 70c4d334a0974e15d0309c48ca52ca08 *tests/testthat.R
 a71a65191ace70d64dd670ebf8f8bdb2 *tests/testthat/test-sink.R
-05d85471f04a5f64c1974cd5400a5cc4 *tests/testthat/test-with.R
+2f345097d2daa74e3415dd509f64c301 *tests/testthat/test-with.R

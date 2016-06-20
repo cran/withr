@@ -1,7 +1,7 @@
 Encoding: UTF-8
 Package: withr
 Title: Run Code 'With' Temporarily Modified Global State
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
     person("Jim", "Hester", , "james.f.hester@gmail.com", role = c("aut", "cre")),
     person("Kirill", "Müller", , "krlmlr+r@mailbox.org", role = "aut"),
@@ -24,7 +24,7 @@ Collate: 'with_.R' 'collate.R' 'dir.R' 'env.R' 'libpaths.R' 'locale.R'
         'with.R'
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-02-04 15:42:19 UTC; jhester
+Packaged: 2016-06-20 12:49:55 UTC; jhester
 Author: Jim Hester [aut, cre],
   Kirill Müller [aut],
   Hadley Wickham [aut],
@@ -32,4 +32,4 @@ Author: Jim Hester [aut, cre],
   RStudio [cph]
 Maintainer: Jim Hester <james.f.hester@gmail.com>
 Repository: CRAN
-Date/Publication: 2016-02-04 17:58:33
+Date/Publication: 2016-06-20 17:32:02
