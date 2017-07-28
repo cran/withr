@@ -2,9 +2,12 @@
 % Please edit documentation in R/path.R
 \name{with_path}
 \alias{with_path}
+\alias{local_path}
 \title{PATH environment variable}
 \usage{
 with_path(new, code, action = "prefix")
+
+local_path(new, code, action = "prefix", .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[character]}\cr New \code{PATH} entries}
@@ -13,6 +16,8 @@ with_path(new, code, action = "prefix")
 
 \item{action}{\code{[character(1)]}\cr Should new values \code{"replace"}, \code{"prefix"} or
 \code{"suffix"} existing paths}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -24,6 +29,5 @@ Temporarily change the system search path.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{Sys.setenv}}
+\code{\link[=Sys.setenv]{Sys.setenv()}}
 }
-

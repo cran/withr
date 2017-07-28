@@ -2,16 +2,21 @@
 % Please edit documentation in R/par.R
 \name{with_par}
 \alias{with_par}
+\alias{local_par}
 \title{Graphics parameters}
 \usage{
 with_par(new, code, no.readonly = FALSE)
+
+local_par(new, code, no.readonly = FALSE, .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[named list]}\cr New graphics parameters and their values}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
-\item{no.readonly}{\code{[logical(1)]}\cr see \code{\link{par}} documentation.}
+\item{no.readonly}{\code{[logical(1)]}\cr see \code{\link[=par]{par()}} documentation.}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -23,6 +28,5 @@ Temporarily change graphics parameters.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{par}}
+\code{\link[=par]{par()}}
 }
-

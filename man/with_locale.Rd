@@ -2,14 +2,19 @@
 % Please edit documentation in R/locale.R
 \name{with_locale}
 \alias{with_locale}
+\alias{local_locale}
 \title{Locale settings}
 \usage{
 with_locale(new, code)
+
+local_locale(new, code, .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[named character]}\cr New locale settings}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -24,6 +29,5 @@ Setting the \code{LC_ALL} category is currently not implemented.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{Sys.setlocale}}
+\code{\link[=Sys.setlocale]{Sys.setlocale()}}
 }
-

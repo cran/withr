@@ -2,12 +2,17 @@
 % Please edit documentation in R/libpaths.R
 \name{with_temp_libpaths}
 \alias{with_temp_libpaths}
+\alias{local_temp_libpaths}
 \title{Library paths}
 \usage{
 with_temp_libpaths(code)
+
+local_temp_libpaths(code, .local_envir = parent.frame())
 }
 \arguments{
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -19,8 +24,7 @@ Temporarily prepend a new temporary directory to the library paths.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{.libPaths}}
+\code{\link[=.libPaths]{.libPaths()}}
 
 Other libpaths: \code{\link{with_libpaths}}
 }
-

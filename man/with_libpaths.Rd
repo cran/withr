@@ -2,9 +2,12 @@
 % Please edit documentation in R/libpaths.R
 \name{with_libpaths}
 \alias{with_libpaths}
+\alias{local_libpaths}
 \title{Library paths}
 \usage{
 with_libpaths(new, code, action = "replace")
+
+local_libpaths(new, code, action = "replace", .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[character]}\cr New library paths}
@@ -13,6 +16,8 @@ with_libpaths(new, code, action = "replace")
 
 \item{action}{\code{[character(1)]}\cr should new values \code{"replace"}, \code{"prefix"} or
 \code{"suffix"} existing paths.}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -24,8 +29,7 @@ Temporarily change library paths.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{.libPaths}}
+\code{\link[=.libPaths]{.libPaths()}}
 
 Other libpaths: \code{\link{with_temp_libpaths}}
 }
-

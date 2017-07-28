@@ -2,14 +2,19 @@
 % Please edit documentation in R/collate.R
 \name{with_collate}
 \alias{with_collate}
+\alias{local_collate}
 \title{Collation Order}
 \usage{
 with_collate(new, code)
+
+local_collate(new, code, .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[character(1)]}\cr New collation order}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -22,4 +27,3 @@ Temporarily change collation order by changing the value of the
 \seealso{
 \code{\link{withr}} for examples
 }
-

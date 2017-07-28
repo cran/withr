@@ -11,7 +11,12 @@ set_options <- function(new_options) {
 #' Temporarily change global options.
 #'
 #' @template with
-#' @param new \code{[named list]}\cr New options and their values
-#' @seealso \code{\link{options}}
+#' @param new `[named list]`\cr New options and their values
+#' @inheritParams with_collate
+#' @seealso [options()]
 #' @export
 with_options <- with_(set_options)
+
+#' @rdname with_options
+#' @export
+local_options <- local_(set_options)

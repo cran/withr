@@ -2,9 +2,12 @@
 % Please edit documentation in R/env.R
 \name{with_envvar}
 \alias{with_envvar}
+\alias{local_envvar}
 \title{Environment variables}
 \usage{
 with_envvar(new, code, action = "replace")
+
+local_envvar(new, code, action = "replace", .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[named character]}\cr New environment variables}
@@ -13,6 +16,8 @@ with_envvar(new, code, action = "replace")
 
 \item{action}{should new values \code{"replace"}, \code{"prefix"} or
 \code{"suffix"} existing variables with the same name.}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -28,6 +33,5 @@ If there are any duplicated variable names only the last one is used.
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{Sys.setenv}}
+\code{\link[=Sys.setenv]{Sys.setenv()}}
 }
-

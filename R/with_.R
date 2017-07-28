@@ -1,26 +1,34 @@
-#' Create a new "with" function
+#' @include local_.R
+NULL
+
+#' Create a new "with" or "local" function
 #'
-#' This function is a "constructor" for \code{with_...} functions.  It
-#' is only needed if you want to alter some global state which is
-#' not covered by the existing \code{with_...} functions, see
-#' \link{withr-package} for an overview.
+#' These are constructors for `with_...` or `local_...` functions.
+#' They are only needed if you want to alter some global state which is not
+#' covered by the existing `with_...` functions, see \link{withr-package}
+#' for an overview.
 #'
-#' @param set \code{[function(...)]}\cr Function used to set the state.
-#'   The function can have arbirarily many arguments, they will be replicated
+#' The `with_...` functions reset the state immediately after the
+#' `code` argument has been evaluated. The `local_...` functions
+#' reset their arguments after they go out of scope, usually at the end of the
+#' function body.
+#'
+#' @param set `[function(...)]`\cr Function used to set the state.
+#'   The function can have arbitrarily many arguments, they will be replicated
 #'   in the formals of the returned function.
-#' @param reset \code{[function(x)]}\cr Function used to reset the state.
+#' @param reset `[function(x)]`\cr Function used to reset the state.
 #'   The first argument can be named arbitrarily, further arguments with default
 #'   values, or a "dots" argument, are supported but not used: The function will
-#'   be called as \code{reset(old)}.
-#' @param envir \code{[environment]}\cr Environment of the returned function.
-#' @return \code{[function(new, code, ...)]} A function with at least two arguments,
+#'   be called as `reset(old)`.
+#' @param envir `[environment]`\cr Environment of the returned function.
+#' @return `[function(new, code, ...)]` A function with at least two arguments,
 #' \itemize{
-#' \item \code{new}: New state to use
-#' \item \code{code}: Code to run in that state.
+#' \item `new`: New state to use
+#' \item `code`: Code to run in that state.
 #' }
-#' If there are more arguments to the function passed in \code{set} they are
-#' added to the returned function.  If \code{set} does not have arguments,
-#' the returned function only has a \code{code} argument.
+#' If there are more arguments to the function passed in `set` they are
+#' added to the returned function.  If `set` does not have arguments,
+#' the returned function only has a `code` argument.
 #' @keywords internal
 #' @examples
 #' with_(setwd)

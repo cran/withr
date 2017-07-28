@@ -2,25 +2,29 @@
 % Please edit documentation in R/dir.R
 \name{with_dir}
 \alias{with_dir}
+\alias{local_dir}
 \title{Working directory}
 \usage{
 with_dir(new, code)
+
+local_dir(new, code, .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[character(1)]}\cr New working directory}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
+
+\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
   argument.
 }
 \description{
-Temorarily change the current working directory.
+Temporarily change the current working directory.
 }
 \seealso{
 \code{\link{withr}} for examples
 
-\code{\link{setwd}}
+\code{\link[=setwd]{setwd()}}
 }
-
