@@ -20,13 +20,13 @@
 #' executes the registered handler when the function associated with the
 #' requested environment finishes execution.
 #'
-#' @family scope-related functions
+#' @family local-related functions
 #' @export
 #' @author Kevin Ushey
 #' @examples
-#' # define a 'scope' function that creates a file, and
+#' # define a 'local' function that creates a file, and
 #' # removes it when the parent function has finished executing
-#' scope_file <- function(path) {
+#' local_file <- function(path) {
 #'   file.create(path)
 #'   defer_parent(unlink(path))
 #' }
@@ -34,19 +34,19 @@
 #' # create tempfile path
 #' path <- tempfile()
 #'
-#' # use 'scope_file' in a function
+#' # use 'local_file' in a function
 #' local({
-#'   scope_file(path)
+#'   local_file(path)
 #'   stopifnot(file.exists(path))
 #' })
 #'
-#' # file is deleted as we leave 'local' scope
+#' # file is deleted as we leave 'local' local
 #' stopifnot(!file.exists(path))
 #'
 #' # investigate how 'defer' modifies the
 #' # executing function's environment
 #' local({
-#'   scope_file(path)
+#'   local_file(path)
 #'   print(attributes(environment()))
 #' })
 defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
@@ -54,7 +54,7 @@ defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
     stop("attempt to defer event on global environment")
   priority <- match.arg(priority)
   front <- priority == "first"
-  invisible(add_handler(envir, later(substitute(expr), parent.frame()), front))
+  invisible(add_handler(envir, list(expr = substitute(expr), envir = parent.frame()), front))
 }
 
 #' @rdname defer
@@ -103,14 +103,4 @@ add_handler <- function(envir, handler, front) {
 
   set_handlers(envir, handlers)
   handler
-}
-
-later <- function(expr, envir = .GlobalEnv) {
-  `class<-`(list(expr = expr, envir = envir), "later")
-}
-
-#' @export
-print.later <- function(x, ...) {
-  fmt <- "<later>\n  expr:  %s\n  envir: %s\n"
-  cat(sprintf(fmt, format(x$expr), format(x$envir)))
 }

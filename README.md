@@ -1,8 +1,9 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 Withr - Run Code 'With' Modified State
 ======================================
 
-[![Travis-CI Build Status](https://travis-ci.org/r-lib/withr.svg?branch=master)](https://travis-ci.org/r-lib/withr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/r-lib/withr?branch=master&svg=true)](https://ci.appveyor.com/project/r-lib/withr) [![Coverage Status](https://img.shields.io/codecov/c/github/r-lib/withr/master.svg)](https://codecov.io/github/r-lib/withr?branch=master) [![CRAN Version](http://www.r-pkg.org/badges/version/withr)](http://www.r-pkg.org/pkg/withr)
+[![Travis-CI Build Status](https://travis-ci.org/r-lib/withr.svg?branch=master)](https://travis-ci.org/r-lib/withr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/r-lib/withr?branch=master&svg=true)](https://ci.appveyor.com/project/jimhester/withr) [![Coverage status](https://codecov.io/gh/r-lib/withr/branch/master/graph/badge.svg)](https://codecov.io/github/r-lib/withr?branch=master) [![CRAN Version](http://www.r-pkg.org/badges/version/withr)](http://www.r-pkg.org/pkg/withr)
 
 A set of functions to run code 'with' safely and temporarily modified global state. There are two sets of functions, those prefixed with `with_` and those with `local_`. The former reset their state as soon as the `code` argument has been evaluated. The latter reset when they reach the end of their scope, usually at the end of a function body.
 
@@ -17,30 +18,39 @@ Many of these functions were originally a part of the [devtools](https://github.
 -   `with_options()` / `local_options()` - options
 -   `with_par()` / `local_par()` - graphics parameters
 -   `with_path()` / `local_path()` - PATH environment variable
+-   `with_*()` and `local_()` functions for the built in R devices, `bmp`, `cairo_pdf`, `cairo_ps`, `pdf`, `postscript`, `svg`, `tiff`, `xfig`, `png`, `jpeg`.
+-   `with_connection()` / `local_connection()` - R connections.
+-   `with_package()`, `with_namespace()` and `with_environment()` - to run code with modified object search paths.
+-   `with_tempfile()` / `local_tempfile()` - Create and clean up a temp file.
 
 There are also `with_()` and `local_()` functions to construct new `with_*` and `local_*` functions if needed.
 
 ``` r
-dir.create("test")
-getwd()
-#> [1] "/private/var/folders/dt/r5s12t392tb5sk181j3gs4zw0000gn/T/Rtmp8xR1aN"
-with_dir("test", getwd())
-#> [1] "/private/var/folders/dt/r5s12t392tb5sk181j3gs4zw0000gn/T/Rtmp8xR1aN/test"
-getwd()
-#> [1] "/private/var/folders/dt/r5s12t392tb5sk181j3gs4zw0000gn/T/Rtmp8xR1aN"
-unlink("test")
-
-Sys.getenv("HADLEY")
+Sys.getenv("WITHR")
 #> [1] ""
-with_envvar(c("HADLEY" = 2), Sys.getenv("HADLEY"))
+with_envvar(c("WITHR" = 2), Sys.getenv("WITHR"))
 #> [1] "2"
-Sys.getenv("HADLEY")
+Sys.getenv("WITHR")
 #> [1] ""
 
 with_envvar(c("A" = 1),
   with_envvar(c("A" = 2), action = "suffix", Sys.getenv("A"))
 )
 #> [1] "1 2"
+```
+
+local functions
+---------------
+
+These functions are variants of the corresponding `with_()` function, but rather than resetting the value at the end of the function call they reset when the current context goes out of scope. This is most useful for using within functions.
+
+``` r
+f <- function(x) {
+  local_envvar(c("WITHR" = 2))
+  Sys.getenv("WITHR")
+}
+Sys.getenv("WITHR")
+#> [1] ""
 ```
 
 See Also
