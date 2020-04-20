@@ -10,26 +10,35 @@ with_libpaths(new, code, action = "replace")
 local_libpaths(new, action = "replace", .local_envir = parent.frame())
 }
 \arguments{
-\item{new}{\code{[character]}\cr New library paths}
+\item{new}{\verb{[character]}\cr New library paths}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
-\item{action}{\code{[character(1)]}\cr should new values \code{"replace"}, \code{"prefix"} or
+\item{action}{\verb{[character(1)]}\cr should new values \code{"replace"}, \code{"prefix"} or
 \code{"suffix"} existing paths.}
 
-\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
+\item{.local_envir}{\verb{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
-  argument.
+argument.
 }
 \description{
 Temporarily change library paths.
+}
+\examples{
+.libPaths()
+new_lib <- tempfile()
+dir.create(new_lib)
+with_libpaths(new_lib, print(.libPaths()))
+unlink(new_lib, recursive = TRUE)
 }
 \seealso{
 \code{\link{withr}} for examples
 
 \code{\link[=.libPaths]{.libPaths()}}
 
-Other libpaths: \code{\link{with_temp_libpaths}}
+Other libpaths: 
+\code{\link{with_temp_libpaths}()}
 }
+\concept{libpaths}

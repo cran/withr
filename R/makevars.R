@@ -19,7 +19,7 @@ NULL
 #' @keywords internal
 #' @export
 set_makevars <- function(variables,
-                         old_path = file.path("~", ".R", "Makevars"),
+                         old_path = makevars_user(),
                          new_path = tempfile(),
                          assignment = c("=", ":=", "?=", "+=")) {
   if (length(variables) == 0) {
@@ -30,7 +30,7 @@ set_makevars <- function(variables,
   assignment <- match.arg(assignment)
 
   old <- NULL
-  if (file.exists(old_path)) {
+  if (length(old_path) == 1 && file.exists(old_path)) {
     lines <- readLines(old_path)
     old <- lines
     for (var in names(variables)) {
@@ -68,8 +68,13 @@ set_makevars <- function(variables,
 #' @param new `[named character]`\cr New variables and their values
 #' @param path `[character(1)]`\cr location of existing `Makevars` file to modify.
 #' @param assignment `[character(1)]`\cr assignment type to use.
+#' @examples
+#' writeLines("void foo(int* bar) { *bar = 1; }\n", "foo.c")
+#' system("R CMD SHLIB --preclean -c foo.c")
+#' with_makevars(c(CFLAGS = "-O3"), system("R CMD SHLIB --preclean -c foo.c"))
+#' unlink(c("foo.c", "foo.so"))
 #' @export
-with_makevars <- function(new, code, path = file.path("~", ".R", "Makevars"), assignment = c("=", ":=", "?=", "+=")) {
+with_makevars <- function(new, code, path = makevars_user(), assignment = c("=", ":=", "?=", "+=")) {
   assignment <- match.arg(assignment)
   makevars_file <- tempfile()
   on.exit(unlink(makevars_file), add = TRUE)
@@ -79,7 +84,7 @@ with_makevars <- function(new, code, path = file.path("~", ".R", "Makevars"), as
   })
 }
 
-local_makevars <- function(new, path = file.path("~", ".R", "Makevars"), assignment = c("=", ":=", "?=", "+="), .local_envir = parent.frame()) {
+local_makevars <- function(new, path = makevars_user(), assignment = c("=", ":=", "?=", "+="), .local_envir = parent.frame()) {
   assignment <- match.arg(assignment)
   makevars_file <- tempfile()
   defer(unlink(makevars_file), envir = .local_envir)

@@ -3,20 +3,26 @@
 \name{defer}
 \alias{defer}
 \alias{defer_parent}
+\alias{deferred_run}
+\alias{deferred_clear}
 \title{Defer Evaluation of an Expression}
 \usage{
 defer(expr, envir = parent.frame(), priority = c("first", "last"))
 
 defer_parent(expr, priority = c("first", "last"))
+
+deferred_run(envir = parent.frame())
+
+deferred_clear(envir = parent.frame())
 }
 \arguments{
-\item{expr}{\code{[expression]}\cr An expression to be evaluated.}
+\item{expr}{\verb{[expression]}\cr An expression to be evaluated.}
 
-\item{envir}{\code{[environment]}\cr Attach exit handlers to this environment.
+\item{envir}{\verb{[environment]}\cr Attach exit handlers to this environment.
 Typically, this should be either the current environment or
 a parent frame (accessed through \code{\link[=parent.frame]{parent.frame()}}).}
 
-\item{priority}{\code{[character(1)]}\cr Specify whether this handler should
+\item{priority}{\verb{[character(1)]}\cr Specify whether this handler should
 be executed \code{"first"} or \code{"last"}, relative to any other
 registered handlers on this environment.}
 }
@@ -27,10 +33,17 @@ on the stack. This provides a nice mechanism for scoping side
 effects for the duration of a function's execution.
 }
 \details{
-\code{defer} works by attaching handlers to the requested environment (as an
+\code{defer()} works by attaching handlers to the requested environment (as an
 attribute called \code{"handlers"}), and registering an exit handler that
 executes the registered handler when the function associated with the
 requested environment finishes execution.
+
+Deferred events can be set on the global environment, primarily to facilitate
+the interactive development of code that is intended to be executed inside a
+function or test. A message alerts the user to the fact that an explicit
+\code{deferred_run()} is the only way to trigger these deferred events. Use
+\code{deferred_clear()} to clear them without evaluation. The global environment
+scenario is the main motivation for these functions.
 }
 \examples{
 # define a 'local' function that creates a file, and
@@ -58,7 +71,14 @@ local({
   local_file(path)
   print(attributes(environment()))
 })
+
+# defer and trigger events on the global environment
+defer(print("one"))
+defer(print("two"))
+deferred_run()
+
+defer(print("three"))
+deferred_clear()
+deferred_run()
 }
-\author{
-Kevin Ushey
-}
+\concept{local-related functions}

@@ -16,11 +16,11 @@ which is then returned.}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
-\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
+\item{.local_envir}{\verb{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
-  argument.
+argument.
 }
 \description{
 R file connections which are automatically closed.
@@ -34,6 +34,8 @@ read_foo <- function() {
   readLines(local_connection(file("foo", "r")))
 }
 read_foo()
+
+unlink("foo")
 }
 \seealso{
 \code{\link{withr}} for examples

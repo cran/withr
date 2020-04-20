@@ -10,20 +10,33 @@ with_par(new, code, no.readonly = FALSE)
 local_par(new, no.readonly = FALSE, .local_envir = parent.frame())
 }
 \arguments{
-\item{new}{\code{[named list]}\cr New graphics parameters and their values}
+\item{new}{\verb{[named list]}\cr New graphics parameters and their values}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
-\item{no.readonly}{\code{[logical(1)]}\cr see \code{\link[=par]{par()}} documentation.}
+\item{no.readonly}{\verb{[logical(1)]}\cr see \code{\link[=par]{par()}} documentation.}
 
-\item{.local_envir}{\code{[environment]}\cr The environment to use for scoping.}
+\item{.local_envir}{\verb{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
-  argument.
+argument.
 }
 \description{
 Temporarily change graphics parameters.
+}
+\examples{
+old <- par("col" = "black")
+
+# This will be in red
+with_par(list(col = "red", pch = 19),
+  plot(mtcars$hp, mtcars$wt)
+)
+
+# This will still be in black
+plot(mtcars$hp, mtcars$wt)
+
+par(old)
 }
 \seealso{
 \code{\link{withr}} for examples

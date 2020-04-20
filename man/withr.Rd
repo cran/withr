@@ -17,8 +17,8 @@ function).
 \section{Arguments pattern}{
 
 \tabular{lll}{
-\code{new} \tab \code{[various]} \tab Values for setting \cr
-\code{code} \tab \code{[any]} \tab Code to execute in the temporary environment \cr
+\code{new} \tab \verb{[various]} \tab Values for setting \cr
+\code{code} \tab \verb{[any]} \tab Code to execute in the temporary environment \cr
 \code{...} \tab \tab Further arguments \cr
 }
 }
@@ -74,4 +74,31 @@ f <- function(x) {
   Sys.getenv("WITHR")
 }
 Sys.getenv("WITHR")
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{http://withr.r-lib.org}
+  \item \url{http://github.com/r-lib/withr#readme}
+  \item Report bugs at \url{http://github.com/r-lib/withr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Jim Hester \email{james.f.hester@gmail.com}
+
+Authors:
+\itemize{
+  \item Kirill Müller \email{krlmlr+r@mailbox.org}
+  \item Kevin Ushey \email{kevinushey@gmail.com}
+  \item Hadley Wickham \email{hadley@rstudio.com}
+  \item Winston Chang
+}
+
+Other contributors:
+\itemize{
+  \item Richard Cotton [contributor]
+  \item RStudio [copyright holder]
+}
+
 }
