@@ -2,6 +2,7 @@
 % Please edit documentation in R/makevars.R
 \name{with_makevars}
 \alias{with_makevars}
+\alias{local_makevars}
 \title{Makevars variables}
 \usage{
 with_makevars(
@@ -10,15 +11,27 @@ with_makevars(
   path = makevars_user(),
   assignment = c("=", ":=", "?=", "+=")
 )
+
+local_makevars(
+  .new = list(),
+  ...,
+  .path = makevars_user(),
+  .assignment = c("=", ":=", "?=", "+="),
+  .local_envir = parent.frame()
+)
 }
 \arguments{
-\item{new}{\verb{[named character]}\cr New variables and their values}
+\item{new, .new}{\verb{[named character]}\cr New variables and their values}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
-\item{path}{\verb{[character(1)]}\cr location of existing \code{Makevars} file to modify.}
+\item{path, .path}{\verb{[character(1)]}\cr location of existing \code{Makevars} file to modify.}
 
-\item{assignment}{\verb{[character(1)]}\cr assignment type to use.}
+\item{assignment, .assignment}{\verb{[character(1)]}\cr assignment type to use.}
+
+\item{...}{Additional new variables and their values.}
+
+\item{.local_envir}{\verb{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}

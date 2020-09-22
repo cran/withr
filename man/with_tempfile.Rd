@@ -3,6 +3,8 @@
 \name{with_tempfile}
 \alias{with_tempfile}
 \alias{local_tempfile}
+\alias{with_tempdir}
+\alias{local_tempdir}
 \title{Temporary files}
 \usage{
 with_tempfile(
@@ -15,15 +17,31 @@ with_tempfile(
 )
 
 local_tempfile(
-  new,
+  new = NULL,
   envir = parent.frame(),
   pattern = "file",
   tmpdir = tempdir(),
   fileext = ""
 )
+
+with_tempdir(
+  code,
+  clean = TRUE,
+  pattern = "file",
+  tmpdir = tempdir(),
+  fileext = ""
+)
+
+local_tempdir(
+  pattern = "file",
+  tmpdir = tempdir(),
+  fileext = "",
+  .local_envir = parent.frame(),
+  clean = TRUE
+)
 }
 \arguments{
-\item{new}{\verb{[character vector]}\cr Names of temporary file handles to create.}
+\item{new}{\verb{[character vector]}\cr (Deprecated for \code{local_tempfile()}) Names of temporary file handles to create.}
 
 \item{code}{\code{[any]}\cr Code to execute in the temporary environment}
 
@@ -35,6 +53,11 @@ local_tempfile(
 \item{tmpdir}{a non-empty character vector giving the directory name}
 
 \item{fileext}{a non-empty character vector giving the file extension}
+
+\item{clean}{\verb{[logical(1)]}\cr A logical indicating if the temporary
+directory should be deleted after use (\code{TRUE}, default) or left alone (\code{FALSE}).}
+
+\item{.local_envir}{\verb{[environment]}\cr The environment to use for scoping.}
 }
 \value{
 \code{[any]}\cr The results of the evaluation of the \code{code}
@@ -45,8 +68,8 @@ Temporarily create a tempfile, which is automatically removed afterwards.
 }
 \examples{
 # check how big iris would be if written as csv vs RDS
-with_tempfile("tf", {write.csv(iris, tf); file.size(tf)})
-with_tempfile("tf", {saveRDS(iris, tf); file.size(tf)})
+tf <- with_tempfile("tf", {write.csv(iris, tf); file.size(tf)})
+tf <- with_tempfile("tf", {saveRDS(iris, tf); file.size(tf)})
 }
 \seealso{
 \code{\link{withr}} for examples

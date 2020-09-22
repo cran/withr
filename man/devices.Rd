@@ -28,15 +28,15 @@
 \usage{
 with_bmp(new, code, ...)
 
-local_bmp(new, ..., .local_envir = parent.frame())
+local_bmp(new = list(), ..., .local_envir = parent.frame())
 
 with_cairo_pdf(new, code, ...)
 
-local_cairo_pdf(new, ..., .local_envir = parent.frame())
+local_cairo_pdf(new = list(), ..., .local_envir = parent.frame())
 
 with_cairo_ps(new, code, ...)
 
-local_cairo_ps(new, ..., .local_envir = parent.frame())
+local_cairo_ps(new = list(), ..., .local_envir = parent.frame())
 
 with_pdf(
   new,
@@ -62,7 +62,7 @@ with_pdf(
 )
 
 local_pdf(
-  new,
+  new = list(),
   width,
   height,
   onefile,
@@ -108,7 +108,7 @@ with_postscript(
 )
 
 local_postscript(
-  new,
+  new = list(),
   onefile,
   family,
   title,
@@ -144,7 +144,7 @@ with_svg(
 )
 
 local_svg(
-  new,
+  new = list(),
   width = 7,
   height = 7,
   pointsize = 12,
@@ -158,7 +158,7 @@ local_svg(
 
 with_tiff(new, code, ...)
 
-local_tiff(new, ..., .local_envir = parent.frame())
+local_tiff(new = list(), ..., .local_envir = parent.frame())
 
 with_xfig(
   new,
@@ -179,7 +179,7 @@ with_xfig(
 )
 
 local_xfig(
-  new,
+  new = list(),
   onefile = FALSE,
   encoding = "none",
   paper = "default",
@@ -198,11 +198,11 @@ local_xfig(
 
 with_png(new, code, ...)
 
-local_png(new, ..., .local_envir = parent.frame())
+local_png(new = list(), ..., .local_envir = parent.frame())
 
 with_jpeg(new, code, ...)
 
-local_jpeg(new, ..., .local_envir = parent.frame())
+local_jpeg(new = list(), ..., .local_envir = parent.frame())
 }
 \arguments{
 \item{new}{\code{[named character]}\cr New graphics device}
@@ -273,13 +273,14 @@ local_jpeg(new, ..., .local_envir = parent.frame())
     \sQuote{Color models}.}
 
 \item{useDingbats}{logical.  Should small circles be rendered
-    \emph{via} the Dingbats font?  Defaults to \code{TRUE}, which produces
-    smaller and better output.  Setting this to \code{FALSE} can work
-    around font display problems in broken PDF viewers: although this
+    \emph{via} the Dingbats font?  Defaults to \code{FALSE}.
+    If \code{TRUE}, this can produce smaller and better output, but
+    there can font display problems in broken PDF viewers: although this
     font is one of the 14 guaranteed to be available in all PDF viewers,
     that guarantee is not always honoured.
 
-    On Unix-alikes (incl. Mac), see the \sQuote{Note} for a possible fix for some viewers.}
+    For Unix-alikes (including macOS) see the \sQuote{Note} for a
+    possible fix for some viewers.}
 
 \item{useKerning}{logical.  Should kerning corrections be included in
     setting text and calculating string widths?  Defaults to \code{TRUE}.}
