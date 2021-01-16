@@ -1,6 +1,7 @@
-cc6f2c168546ea3cf67fd544900d440e *DESCRIPTION
-ab3eb61e0ad319787b88b1d3918f0c3e *NAMESPACE
-06a229a5a46c43799dde59efa62fcadf *NEWS.md
+616715fbc60b57dce69575d6c7ca836a *DESCRIPTION
+6d8b003cc83b1dfced7bd996b18429dc *LICENSE
+0c8fb6eba64c33e2f72cda971a7e4bf9 *NAMESPACE
+d473ad72379fb3f1a6af6905ad860e17 *NEWS.md
 64ce23327fa1422b0a7184d0dbf83717 *R/collate.R
 74da295dd7a1e9db2b9a6e746cf9ae4a *R/compat-defer.R
 59e090f71fd584df1f32b0ca3591aeae *R/connection.R
@@ -19,7 +20,7 @@ c7aa07dc6ee6d61e4c1007fd34f7b82b *R/namespace.R
 1c25590e6a2b3e6b6796bd7b9a24aa6f *R/par.R
 c6ab7f007fa99ef809f5f6483846d083 *R/path.R
 56cf61a22141c1994ffc9b362af9e3cc *R/rng.R
-0fdb5e5dac4c9c5c021932c6488e2ce2 *R/seed.R
+f7dbe9ba98afc42f26c41cc78d907354 *R/seed.R
 1939e43a0b29a1a8b446de3e0b33c233 *R/sink.R
 d9f44983e56b71f93b162cf427ef0618 *R/tempfile.R
 f68d8de59a262d433a1d291f4fad1b89 *R/timezone.R
@@ -32,7 +33,7 @@ e0d5b47fe55eb6190103480bfe65a731 *R/with.R
 9f64912c33a6fab8640de9c9e7fa9680 *build/vignette.rds
 083f07f7273b941c0bc91470ee2c3946 *inst/doc/changing-and-restoring-state.R
 513119645a9dd924fef3cd504ef3b3e2 *inst/doc/changing-and-restoring-state.Rmd
-792e239f6424099081910e0253093a31 *inst/doc/changing-and-restoring-state.html
+3397f5861148150d7f7fa0c7a76c9d54 *inst/doc/changing-and-restoring-state.html
 d945ab8c18c789b39b916f555d4e614a *man/defer.Rd
 89b1f675b3b78d99ca629f4d4e2cf361 *man/devices.Rd
 50a76f34ad9d373f9b8899383d856cdb *man/figures/README-unnamed-chunk-3-1.png
@@ -66,7 +67,7 @@ a364e094bd6bdc269a0123be6d5c4cc8 *man/with_seed.Rd
 b2560c665a07b27bf83bf27e8fa0ab17 *tests/testthat/test-connection.R
 d2ed51542e4abe02bb3b1b3d8f5aec8d *tests/testthat/test-db.R
 8bc10253bd7fa1f3a200b1e8cef04bdd *tests/testthat/test-defer.R
-c5cae288b0b53b6ca2e48d021e2e5d28 *tests/testthat/test-devices.R
+6ffd2012f66ab2040b95cecbcd5196c0 *tests/testthat/test-devices.R
 877187cb638cf3991e443e1cf96fa8eb *tests/testthat/test-file.R
 1b90b730ef7b2ea63a7d117529e1c0d4 *tests/testthat/test-local.R
 95249441369039d904fa844406f0e057 *tests/testthat/test-namespace.R
