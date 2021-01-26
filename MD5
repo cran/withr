@@ -1,7 +1,7 @@
-616715fbc60b57dce69575d6c7ca836a *DESCRIPTION
+1ee0ac526143f5ad7913bf5fc1bc23e2 *DESCRIPTION
 6d8b003cc83b1dfced7bd996b18429dc *LICENSE
 0c8fb6eba64c33e2f72cda971a7e4bf9 *NAMESPACE
-d473ad72379fb3f1a6af6905ad860e17 *NEWS.md
+7ae84c228b6e43cd4bf423d896366507 *NEWS.md
 64ce23327fa1422b0a7184d0dbf83717 *R/collate.R
 74da295dd7a1e9db2b9a6e746cf9ae4a *R/compat-defer.R
 59e090f71fd584df1f32b0ca3591aeae *R/connection.R
@@ -67,7 +67,7 @@ a364e094bd6bdc269a0123be6d5c4cc8 *man/with_seed.Rd
 b2560c665a07b27bf83bf27e8fa0ab17 *tests/testthat/test-connection.R
 d2ed51542e4abe02bb3b1b3d8f5aec8d *tests/testthat/test-db.R
 8bc10253bd7fa1f3a200b1e8cef04bdd *tests/testthat/test-defer.R
-6ffd2012f66ab2040b95cecbcd5196c0 *tests/testthat/test-devices.R
+0488d5e455695b0ecbd19e8a7df4b6b1 *tests/testthat/test-devices.R
 877187cb638cf3991e443e1cf96fa8eb *tests/testthat/test-file.R
 1b90b730ef7b2ea63a7d117529e1c0d4 *tests/testthat/test-local.R
 95249441369039d904fa844406f0e057 *tests/testthat/test-namespace.R

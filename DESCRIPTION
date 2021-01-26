@@ -1,11 +1,11 @@
 Package: withr
 Title: Run Code 'With' Temporarily Modified Global State
-Version: 2.4.0
+Version: 2.4.1
 Authors@R: 
     c(person(given = "Jim",
              family = "Hester",
              role = c("aut", "cre"),
-             email = "james.f.hester@gmail.com"),
+             email = "jim.hester@rstudio.com"),
       person(given = "Kirill",
              family = "Müller",
              role = "aut",
@@ -52,7 +52,7 @@ Collate: 'local_.R' 'with_.R' 'collate.R' 'compat-defer.R'
         'sink.R' 'tempfile.R' 'timezone.R' 'torture.R' 'utils.R'
         'with.R'
 NeedsCompilation: no
-Packaged: 2021-01-15 16:34:41 UTC; jhester
+Packaged: 2021-01-26 14:29:58 UTC; jhester
 Author: Jim Hester [aut, cre],
   Kirill Müller [aut],
   Kevin Ushey [aut],
@@ -61,6 +61,6 @@ Author: Jim Hester [aut, cre],
   Jennifer Bryan [ctb],
   Richard Cotton [ctb],
   RStudio [cph]
-Maintainer: Jim Hester <james.f.hester@gmail.com>
+Maintainer: Jim Hester <jim.hester@rstudio.com>
 Repository: CRAN
-Date/Publication: 2021-01-16 02:10:02 UTC
+Date/Publication: 2021-01-26 16:20:02 UTC
