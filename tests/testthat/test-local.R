@@ -1,5 +1,3 @@
-context("local")
-
 test_that("local_options works", {
   expect_false(getOption("scipen") == 999)
   local({
@@ -180,6 +178,19 @@ test_that("local_makevars works with alternative assignments", {
     expect_equal("CFLAGS+=-O0", readLines(Sys.getenv("R_MAKEVARS_USER")))
   })
   expect_equal("CFLAGS=-03", readLines(current))
+})
+
+test_that("local_makevars uses the existing R_MAKEVARS_USER by default", {
+  tf <- tempfile()
+  local_envvar("R_MAKEVARS_USER" = tf)
+  on.exit(unlink(tf))
+  writeLines(con = tf, c("CFLAGS=-O3", "CXXFLAGS=-O3"), sep = "\n")
+  new <- c(CFLAGS = "-O0")
+  local({
+    local_makevars(new)
+    expect_equal(readLines(Sys.getenv("R_MAKEVARS_USER")), c("CFLAGS=-O0", "CXXFLAGS=-O3"))
+  })
+  expect_equal(readLines(tf), c("CFLAGS=-O3", "CXXFLAGS=-O3"))
 })
 
 test_that("local_dir works as expected", {
