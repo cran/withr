@@ -1,12 +1,29 @@
+#' @include aaa.R
+NULL
+
 #' @rdname with_
 #' @export
-local_ <- function(set, reset = set, envir = parent.frame(), new = TRUE, dots = FALSE) {
+local_ <- function(set,
+                   reset = set,
+                   get = NULL,
+                   ...,
+                   envir = parent.frame(),
+                   new = TRUE,
+                   dots = FALSE) {
+  if (!missing(...)) {
+    stop("`...` must be empty.")
+  }
 
   fmls <- formals(set)
 
   if (length(fmls) > 0L) {
-    # called pass all extra formals on
+    # Called pass all extra formals on
     called_fmls <- stats::setNames(lapply(names(fmls), as.symbol), names(fmls))
+
+    # Special case for dots. If `set()` and/or `get()` take dots, it
+    # is assumed they implement `options()`-like semantic: a list
+    # passed as first argument is automatically spliced in the dots.
+    names(called_fmls)[names(called_fmls) == "..."] <- ""
 
     if (new) {
       if (dots) {
@@ -27,31 +44,34 @@ local_ <- function(set, reset = set, envir = parent.frame(), new = TRUE, dots = 
   }
 
   set_call <- as.call(c(substitute(set), called_fmls))
-
   reset <- if (missing(reset)) substitute(set) else substitute(reset)
 
   if (dots) {
     modify_call <- quote(.new <- list_combine(as.list(.new), list(...)))
-
-    fun <- eval(bquote(function(args) {
-        .(modify_call)
-        old <- .(set_call)
-        defer(.(reset)(old), envir = .local_envir)
-        invisible(old)
-      }
-    ))
   } else {
+    modify_call <- NULL
+  }
+
+  if (is.null(get)) {
     fun <- eval(bquote(function(args) {
-        old <- .(set_call)
-        defer(.(reset)(old), envir = .local_envir)
-        invisible(old)
-      }
-    ))
+      .(modify_call)
+      old <- .(set_call)
+      defer(.(reset)(old), envir = .local_envir)
+      invisible(old)
+    }))
+  } else {
+    get_call <- as.call(c(substitute(get), called_fmls))
+    fun <- eval(bquote(function(args) {
+      .(modify_call)
+      old <- .(get_call)
+      defer(.(reset)(old), envir = .local_envir)
+      .(set_call)
+      invisible(old)
+    }))
   }
 
   # substitute does not work on arguments, so we need to fix them manually
   formals(fun) <- c(fun_args, alist(.local_envir = parent.frame()))
-
   environment(fun) <- envir
 
   fun

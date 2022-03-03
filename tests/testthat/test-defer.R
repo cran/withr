@@ -19,9 +19,13 @@ test_that("defer_parent works", {
 
 test_that("defer()'s global env facilities work", {
   expect_null(get_handlers(globalenv()))
+  local_options(rlang_interactive = TRUE)
   Sys.setenv(abcdefg = "abcdefg")
 
-  expect_snapshot(defer(print("howdy"), envir = globalenv()))
+  expect_snapshot(
+    defer(print("howdy"), envir = globalenv()),
+    cran = TRUE
+  )
   expect_message(
     local_envvar(c(abcdefg = "tuvwxyz"), .local_envir = globalenv()),
     NA
@@ -41,6 +45,18 @@ test_that("defer()'s global env facilities work", {
   expect_null(h)
 })
 
+test_that("non-top-level global env is unwound like a normal env", {
+  expect_silent(
+    evalq(local_options(list(opt = "foo")), globalenv())
+  )
+
+  # Check that handlers have been called
+  expect_null(getOption("opt"))
+
+  # Check that handlers were cleaned up
+  expect_null(get_handlers(globalenv()))
+})
+
 test_that("defered actions in global env are run on exit", {
   path <- local_tempfile()
   callr::r(
@@ -50,6 +66,29 @@ test_that("defered actions in global env are run on exit", {
     list(path = path)
   )
   expect_equal(readLines(path), "a")
+})
+
+test_that("defered actions in Rmd are run on exit", {
+  skip_if_cannot_knit()
+
+  rmd <- local_tempfile(fileext = ".Rmd")
+  path <- local_tempfile()
+  writeLines(rmd, text = c(
+    "---",
+    "title: test",
+    "---",
+    "```{r}",
+    paste0("withr::defer(writeLines('a', ", encodeString(path, quote = "'"), "))"),
+    "```"
+  ))
+  callr::r(function(path) rmarkdown::render(path), list(path = rmd))
+  expect_equal(readLines(path), "a")
+
+  # And check when run from globalenv
+  unlink(path)
+  callr::r(function(path) rmarkdown::render(path, envir = globalenv()), list(path = rmd))
+  expect_equal(readLines(path), "a")
+
 })
 
 test_that("defer executes all handlers even if there is an error in one of them", {
@@ -69,4 +108,111 @@ test_that("defer executes all handlers even if there is an error in one of them"
   expect_equal(conditionMessage(err), "hi")
 
   expect_equal(getOption("test_option"), 2)
+})
+
+test_that("defer works within source()", {
+  file <- local_tempfile()
+  out <- NULL
+
+  local_defer <- function(frame = parent.frame()) {
+    defer(out <<- c(out, "local_defer"), envir = frame)
+  }
+
+  cat(file = file, "
+    out <<- c(out, '1')
+    defer(out <<- c(out, 'defer'))
+    out <<- c(out, '2')
+    identity(defer(out <<- c(out, 'identity(defer)')))
+    out <<- c(out, '3')
+    local_defer()
+    out <<- c(out, '4')
+    evalq(defer(out <<- c(out, 'evalq(defer)')))
+    out <<- c(out, '5')
+  ")
+  local(
+    source(file, local = TRUE)
+  )
+
+  expect_equal(out, c(
+    "1",
+    "2",
+    "3",
+    "4",
+    "evalq(defer)",
+    "5",
+    "local_defer",
+    "identity(defer)",
+    "defer"
+  ))
+})
+
+test_that("defer works within source()", {
+  out <- NULL
+
+  file1 <- local_tempfile()
+  file2 <- local_tempfile()
+
+  cat(file = file1, "
+    out <<- c(out, 'outer-1')
+    defer(out <<- c(out, 'outer-before'))
+    out <<- c(out, 'outer-2')
+    local(source(file2, local = TRUE))
+    defer(out <<- c(out, 'outer-after'))
+    out <<- c(out, 'outer-3')
+  ")
+  cat(file = file2, "
+    out <<- c(out, '1')
+    defer(out <<- c(out, 'defer'))
+    out <<- c(out, '2')
+  ")
+
+  local(
+    source(file1, local = TRUE)
+  )
+
+  expect_equal(out, c(
+    "outer-1",
+    "outer-2",
+    "1",
+    "2",
+    "defer",
+    "outer-3",
+    "outer-after",
+    "outer-before"
+  ))
+})
+
+test_that("defer works within knitr::knit()", {
+  out <- NULL
+  evalq({
+    defer(out <- c(out, "first"))
+    rmd <- "
+      ```{r}
+      defer(out <- c(out, 'defer 1'))
+      out <- c(out, '1')
+      local({
+        withr::defer(out <<- c(out, 'local 1'))
+      })
+      ```
+      ```{r}
+      defer(out <- c(out, 'defer 2'))
+      out <- c(out, '2')
+      local({
+        withr::defer(out <<- c(out, 'local 2'))
+      })
+      ```
+    "
+    knitr::knit(text = rmd, quiet = TRUE)
+    defer(out <- c(out, "last"))
+  })
+  expect_equal(out, c(
+    "1",
+    "local 1",
+    "2",
+    "local 2",
+    "defer 2",
+    "defer 1",
+    "last",
+    "first"
+  ))
 })

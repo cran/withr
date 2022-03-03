@@ -77,39 +77,6 @@ test_that("local_ works on functions without arguments", {
   expect_equal(res, 1L:3L)
 })
 
-test_that("local_path works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  local({
-    local_path(new_path)
-    expect_equal(normalizePath(new_path), head(get_path(), n = 1))
-    expect_equal(length(get_path()), length(current) + 1L)
-  })
-  expect_equal(current, get_path())
-})
-
-test_that("local_path with suffix action works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  local({
-    local_path(new_path, action = "suffix")
-    expect_equal(normalizePath(new_path), tail(get_path(), n = 1))
-    expect_equal(length(get_path()), length(current) + 1L)
-  })
-  expect_equal(current, get_path())
-})
-
-test_that("local_path with replace action works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  local({
-    local_path(new_path, action = "replace")
-    expect_equal(normalizePath(new_path), get_path())
-    expect_equal(length(get_path()), 1L)
-  })
-  expect_equal(current, get_path())
-})
-
 test_that("local_libpaths works and resets library", {
   lib <- .libPaths()
   new_lib <- "."
@@ -215,4 +182,61 @@ test_that("local_par works as expected", {
   })
   expect_equal(par("pty"), old)
   dev.off()
+})
+
+test_that("supplying a getter to `local_()` shields against early exits", {
+  my_get <- function(x) {
+    out <- as.list(state)[names(x)]
+    names(out) <- names(x)
+    out
+  }
+  my_set <- function(x) {
+    old <- my_get(x)
+
+    mapply(function(nm, val) state[[nm]] <- val, names(x), x)
+    rlang::signal("", "my_cnd")
+
+    invisible(old)
+  }
+
+  state <- new.env()
+  my_local_unsafe <- withr::local_(my_set)
+  my_local_safe <- withr::local_(my_set, get = my_get)
+
+  my_with_unsafe <- function(new, expr) {
+    my_local_unsafe(new)
+    expr
+  }
+  my_with_safe <- function(new, expr) {
+    my_local_safe(new)
+    expr
+  }
+
+  expect_safe_and_unsafe_unwinding(
+    state,
+    my_with_unsafe,
+    my_with_safe
+  )
+
+
+  # `...` code path
+
+  state <- new.env()
+  my_local_unsafe <- withr::local_(my_set, dots = TRUE)
+  my_local_safe <- withr::local_(my_set, get = my_get, dots = TRUE)
+
+  my_with_unsafe <- function(new, expr) {
+    my_local_unsafe(new)
+    expr
+  }
+  my_with_safe <- function(new, expr) {
+    my_local_safe(new)
+    expr
+  }
+
+  expect_safe_and_unsafe_unwinding(
+    state,
+    my_with_unsafe,
+    my_with_safe
+  )
 })

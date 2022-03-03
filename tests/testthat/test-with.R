@@ -63,47 +63,6 @@ test_that("with_ works on functions without arguments", {
   expect_equal(res, 1L:3L)
 })
 
-test_that("with_path works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  with_path(
-    new_path,
-    {
-      expect_equal(normalizePath(new_path), head(get_path(), n = 1))
-      expect_equal(length(get_path()), length(current) + 1L)
-    }
-  )
-  expect_equal(current, get_path())
-})
-
-test_that("with_path with suffix action works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  with_path(
-    new_path,
-    action = "suffix",
-    {
-      expect_equal(normalizePath(new_path), tail(get_path(), n = 1))
-      expect_equal(length(get_path()), length(current) + 1L)
-    }
-  )
-  expect_equal(current, get_path())
-})
-
-test_that("with_path with replace action works and resets path", {
-  current <- normalizePath(get_path(), mustWork = FALSE)
-  new_path <- normalizePath(".")
-  with_path(
-    new_path,
-    action = "replace",
-    {
-      expect_equal(normalizePath(new_path), get_path())
-      expect_equal(length(get_path()), 1L)
-    }
-  )
-  expect_equal(current, get_path())
-})
-
 test_that("with_libpaths works and resets library", {
   lib <- .libPaths()
   new_lib <- "."
@@ -114,34 +73,6 @@ test_that("with_libpaths works and resets library", {
     }
   )
   expect_equal(lib, .libPaths())
-})
-
-test_that("with_locale works and resets locales", {
-  current <- Sys.getlocale("LC_CTYPE")
-  new <- "C"
-  with_locale(
-    c(LC_CTYPE = new),
-    {
-      expect_equal(new, Sys.getlocale("LC_CTYPE"))
-    }
-  )
-  expect_equal(current, Sys.getlocale("LC_CTYPE"))
-})
-
-test_that("with_locale fails with LC_ALL", {
-  expect_error(with_locale(c(LC_ALL = "C"), NULL), "LC_ALL")
-})
-
-test_that("with_collate works and resets collate", {
-  current <- Sys.getlocale("LC_COLLATE")
-  new <- "C"
-  with_collate(
-    new,
-    {
-      expect_equal(new, Sys.getlocale("LC_COLLATE"))
-    }
-  )
-  expect_equal(current, Sys.getlocale("LC_COLLATE"))
 })
 
 test_that("with_makevars works and resets the Makevars file", {
@@ -242,4 +173,30 @@ test_that("with_par works as expected", {
   })
   expect_equal(par("pty"), old)
   dev.off()
+})
+
+test_that("supplying a getter to `with_()` shields against early exits", {
+  my_get <- function(x) {
+    out <- as.list(state)[names(x)]
+    names(out) <- names(x)
+    out
+  }
+  my_set <- function(x) {
+    old <- my_get(x)
+
+    mapply(function(nm, val) state[[nm]] <- val, names(x), x)
+    rlang::signal("", "my_cnd")
+
+    invisible(old)
+  }
+
+  state <- new.env()
+  my_with_unsafe <- withr::with_(my_set)
+  my_with_safe <- withr::with_(my_set, get = my_get)
+
+  expect_safe_and_unsafe_unwinding(
+    state,
+    my_with_unsafe,
+    my_with_safe
+  )
 })
