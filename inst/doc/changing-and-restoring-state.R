@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -71,7 +71,7 @@ on_exit_last_one_wins <- function() {
 }
 on_exit_last_one_wins()
 
-## ---- eval = getRversion() >= "3.5.0"-----------------------------------------
+## ----eval = getRversion() >= "3.5.0"------------------------------------------
 on_exit_stack <- function() {
   cat("put on socks\n")
   on.exit(cat("take off socks\n"), add = TRUE, after = FALSE)

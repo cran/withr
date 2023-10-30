@@ -1,7 +1,7 @@
-a085b4ae6f784f8dea570dbc81ca4537 *DESCRIPTION
+9b4daaf53a40b32d9ba8e16a4b710016 *DESCRIPTION
 6d8b003cc83b1dfced7bd996b18429dc *LICENSE
 3d1b502d24fbf44cdade15005f4b62c5 *NAMESPACE
-c624a04a14d04f682a4484cd06fa7928 *NEWS.md
+c41a9084e39ff7e99820d142d87c2621 *NEWS.md
 50085fd5d2362839c649e45ab4a12ed0 *R/aaa.R
 6a039b9fdb04e0108dbe7dcd1fe7cc90 *R/collate.R
 7f2c442395cfa1ac429cf91aa47c1895 *R/compat-defer.R
@@ -32,8 +32,8 @@ e0d5b47fe55eb6190103480bfe65a731 *R/with.R
 299ccc9fe63a616026f431af4660c0ca *R/with_.R
 88e44ec61deb387dd1c2d8a607c420ee *R/wrap.R
 218c3d1e857b827dfb161ca11ad4b1e0 *README.md
-4bb578d54c56c33274139eaffa821a91 *build/vignette.rds
-083f07f7273b941c0bc91470ee2c3946 *inst/doc/changing-and-restoring-state.R
+f5b387a195991153292f2ff0cd60e606 *build/vignette.rds
+962259551a8526b8b8aa889d0536d52d *inst/doc/changing-and-restoring-state.R
 513119645a9dd924fef3cd504ef3b3e2 *inst/doc/changing-and-restoring-state.Rmd
 282986493eda34ae12eb6f4b02420715 *inst/doc/changing-and-restoring-state.html
 d945ab8c18c789b39b916f555d4e614a *man/defer.Rd
@@ -66,7 +66,7 @@ c44361f6e5194cd5059bfc033fa1c251 *man/with_options.Rd
 294e2eeb5f3aaa4dc5af43b1aa6c6e3b *man/with_timezone.Rd
 092e137de18cd334dbaa9a99170b1885 *man/withr.Rd
 70c4d334a0974e15d0309c48ca52ca08 *tests/testthat.R
-d6f0f2ffb1192974245c12edc9a7a39f *tests/testthat/_snaps/defer.md
+6d3de0c2669d555a3ce9c9ca938c4f62 *tests/testthat/_snaps/defer.md
 eda7c5ba53d6983a366d065366b0eb48 *tests/testthat/_snaps/language.md
 30736b2445676cb91054074293cb5e59 *tests/testthat/_snaps/path.md
 bfdd3b82f7ff421a24788e1171e66423 *tests/testthat/helper.R
