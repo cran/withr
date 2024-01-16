@@ -45,6 +45,17 @@ function or test. A message alerts the user to the fact that an explicit
 \code{deferred_clear()} to clear them without evaluation. The global environment
 scenario is the main motivation for these functions.
 }
+\section{Running handlers within \code{source()}}{
+
+withr handlers run within \code{source()} are run when \code{source()} exits
+rather than line by line.
+
+This is only the case when the script is sourced in \code{globalenv()}.
+For a local environment, the caller needs to set
+\code{options(withr.hook_source = TRUE)}. This is to avoid paying the
+penalty of detecting \code{source()} in the normal usage of \code{defer()}.
+}
+
 \examples{
 # define a 'local' function that creates a file, and
 # removes it when the parent function has finished executing
@@ -72,13 +83,9 @@ local({
   print(attributes(environment()))
 })
 
-# defer and trigger events on the global environment
+# Note that examples lack function scoping so deferred calls are
+# generally executed immediately
 defer(print("one"))
 defer(print("two"))
-deferred_run()
-
-defer(print("three"))
-deferred_clear()
-deferred_run()
 }
 \concept{local-related functions}

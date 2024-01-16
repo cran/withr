@@ -18,7 +18,7 @@ local_ <- function(set,
 
   if (length(fmls) > 0L) {
     # Called pass all extra formals on
-    called_fmls <- stats::setNames(lapply(names(fmls), as.symbol), names(fmls))
+    called_fmls <- setNames(lapply(names(fmls), as.symbol), names(fmls))
 
     # Special case for dots. If `set()` and/or `get()` take dots, it
     # is assumed they implement `options()`-like semantic: a list
@@ -56,7 +56,7 @@ local_ <- function(set,
     fun <- eval(bquote(function(args) {
       .(modify_call)
       old <- .(set_call)
-      defer(.(reset)(old), envir = .local_envir)
+      withr::defer(.(reset)(old), envir = .local_envir)
       invisible(old)
     }))
   } else {
@@ -64,7 +64,7 @@ local_ <- function(set,
     fun <- eval(bquote(function(args) {
       .(modify_call)
       old <- .(get_call)
-      defer(.(reset)(old), envir = .local_envir)
+      withr::defer(.(reset)(old), envir = .local_envir)
       .(set_call)
       invisible(old)
     }))

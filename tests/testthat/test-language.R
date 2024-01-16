@@ -1,19 +1,42 @@
 test_that("can temporarily change language", {
   skip_if_not(has_nls())
 
-  expect_error(with_lang("en_GB", "en", mean[[1]]), "not subsettable")
-  expect_error(with_lang("fr_FR", "fr", mean[[1]]), "non indi\u00e7able")
-  expect_error(with_lang("es_ES", "es", mean[[1]]), "no es subconjunto")
+  # `with_language()` doesn't work when locale is set to C. At the
+  # same time it's perilous to try and set the locale in a
+  # cross-platform way, so just skip these tests in that case.
+  # See https://github.com/r-lib/withr/issues/236
+  skip_if_c_locale()
 
-  # can use either _ or -
-  expect_error(with_lang("pt_BR", "pt_BR", mean[[1]]), "não possível dividir")
-  expect_error(with_lang("pt_BR", "pt-BR", mean[[1]]), "não possível dividir")
+  expect_error(with_language("en", mean[[1]]), "not subsettable")
+  expect_error(with_language("fr", mean[[1]]), "non indi\u00e7able")
+  expect_error(with_language("es", mean[[1]]), "no es subconjunto")
+
+  # Is correctly reset (#213)
+  expect_error(mean[[1]], "not subsettable")
 })
 
-test_that("warns if LANG=C", {
+test_that("can use use either _ or -", {
+  skip_if_not(has_nls())
+  skip_if_c_locale()
+
+  expect_error(with_language("pt_BR", mean[[1]]), "não possível dividir")
+  expect_error(with_language("pt-BR", mean[[1]]), "não possível dividir")
+})
+
+test_that("can temporarily change language after triggering error", {
+  skip_if_not(has_nls())
+  skip_if_c_locale()
+
+  local_language("fr")
+  try(mean[[1]], silent = TRUE) # trigger possible caching
+
+  expect_error(with_language("es", mean[[1]]), "no es subconjunto")
+})
+
+test_that("warns if LC_ALL=C", {
   skip_if_not(has_nls())
 
-  local_envvar(LANG = "C")
+  local_envvar(LC_ALL = "C")
   expect_warning(with_language("en", "x"), "has no effect")
 })
 

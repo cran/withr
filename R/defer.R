@@ -1,7 +1,6 @@
-#' @include compat-defer.R
+# Include standalone defer to overwrite it:
+#' @include standalone-defer.R
 NULL
-
-defer_ns <- environment(defer)
 
 #' Defer Evaluation of an Expression
 #'
@@ -18,8 +17,16 @@ defer_ns <- environment(defer)
 #' be executed `"first"` or `"last"`, relative to any other
 #' registered handlers on this environment.
 #'
-#' @details
+#' @section Running handlers within `source()`:
+#' withr handlers run within `source()` are run when `source()` exits
+#' rather than line by line.
 #'
+#' This is only the case when the script is sourced in `globalenv()`.
+#' For a local environment, the caller needs to set
+#' `options(withr.hook_source = TRUE)`. This is to avoid paying the
+#' penalty of detecting `source()` in the normal usage of `defer()`.
+#'
+#' @details
 #' `defer()` works by attaching handlers to the requested environment (as an
 #' attribute called `"handlers"`), and registering an exit handler that
 #' executes the registered handler when the function associated with the
@@ -61,40 +68,234 @@ defer_ns <- environment(defer)
 #'   print(attributes(environment()))
 #' })
 #'
-#' # defer and trigger events on the global environment
+#' # Note that examples lack function scoping so deferred calls are
+#' # generally executed immediately
 #' defer(print("one"))
 #' defer(print("two"))
-#' deferred_run()
-#'
-#' defer(print("three"))
-#' deferred_clear()
-#' deferred_run()
-defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) NULL
+defer <- function(expr, envir = parent.frame(), priority = c("first", "last")) {
+  if (identical(envir, globalenv())) {
+    source_frame <- source_exit_frame_option(envir)
+    if (!is.null(source_frame)) {
+      # Automatically enable `source()` special-casing for the global
+      # environment. This is the default for `source()` and the normal
+      # case when users run scripts. This also happens in R CMD check
+      # when withr is used inside an example because an R example is
+      # run inside `withAutoprint()` which uses `source()`.
+      local_options(withr.hook_source = TRUE)
+      # And fallthrough to the default `defer()` handling. Within
+      # `source()` we don't require manual calling of
+      # `deferred_run()`.
+    } else if (is_top_level_global_env(envir)) {
+      global_defer(expr, priority = priority)
+      return(invisible(NULL))
+    }
+  }
+
+  priority <- match.arg(priority, choices = c("first", "last"))
+
+  if (knitr_in_progress() && identical(envir, knitr::knit_global())) {
+    return(defer_knitr(expr, envir, priority = priority))
+  }
+
+  # Don't handle `source()` by default to avoid a performance hit
+  if (!is.null(getOption("withr.hook_source"))) {
+    envir <- source_exit_frame(envir)
+  }
+
+  thunk <- as.call(list(function() expr))
+  after <- priority == "last"
+
+  do.call(
+    base::on.exit,
+    list(thunk, TRUE, after),
+    envir = envir
+  )
+}
+
+# Inline formals for performance
+formals(defer)[["priority"]] <- eval(formals(defer)[["priority"]])
+
 
 #' @rdname defer
 #' @export
 defer_parent <- function(expr, priority = c("first", "last")) {
-  eval(substitute(
-    defer(expr, envir, priority),
-    list(expr = substitute(expr), envir = parent.frame(2), priority = priority, defer = defer)
-  ), envir = parent.frame())
+  defer(expr, parent.frame(2), priority = priority)
 }
 
 #' @rdname defer
 #' @export
 deferred_run <- function(envir = parent.frame()) {
-  execute_handlers(envir)
-  deferred_clear(envir)
+  if (knitr_in_progress() && identical(envir, knitr::knit_global())) {
+    # The handlers are thunks so we don't need to clear them.
+    # They will only be run once.
+    frame <- knitr_exit_frame(envir)
+    handlers <- knitr_handlers(frame)
+  } else {
+    if (is_top_level_global_env(envir)) {
+      handlers <- the$global_exits
+    } else {
+      handlers <- frame_exits(envir)
+    }
+    deferred_clear(envir)
+  }
+
+  n <- length(handlers)
+  i <- 0L
+
+  if (!n) {
+    message("No deferred expressions to run")
+    return(invisible(NULL))
+  }
+
+  defer(message(
+    sprintf("Ran %s/%s deferred expressions", i, n)
+  ))
+
+  for (expr in handlers) {
+    eval(expr, envir)
+    i <- i + 1L
+  }
+}
+
+frame_exits <- function(frame = parent.frame()) {
+  exits <- do.call(sys.on.exit, list(), envir = frame)
+
+  # The exit expressions are stored in a single object that is
+  # evaluated on exit. This can be NULL, an expression, or multiple
+  # expressions wrapped in {. We convert this data structure to a list
+  # of expressions.
+  if (is.null(exits)) {
+    list()
+  } else if (identical(exits[[1]], quote(`{`))) {
+    as.list(exits[-1])
+  } else {
+    list(exits)
+  }
+}
+frame_clear_exits <- function(frame = parent.frame()) {
+  do.call(on.exit, list(), envir = frame)
 }
 
 #' @rdname defer
 #' @export
 deferred_clear <- function(envir = parent.frame()) {
-  attr(envir, "withr_handlers") <- NULL
+  if (is_top_level_global_env(envir)) {
+    the$global_exits <- list()
+  } else {
+    frame_clear_exits(envir)
+  }
   invisible()
 }
 
-# Splice `compat-defer.R` into the namespace
-for (name in names(defer_ns)) {
-  assign(name, defer_ns[[name]])
+#' Defer expression globally
+#'
+#' This function is mostly internal. It is exported to be called in
+#' standalone `defer()` implementations to defer expressions from the
+#' global environment.
+#'
+#' @inheritParams defer
+#' @keywords internal
+#' @export
+global_defer <- function(expr, priority = c("first", "last")) {
+  priority <- match.arg(priority, choices = c("first", "last"))
+
+  env <- globalenv()
+  handlers <- the$global_exits
+
+  if (!length(handlers)) {
+    # For session scopes we use reg.finalizer()
+    if (is_interactive()) {
+      message(
+        sprintf("Setting global deferred event(s).\n"),
+        "i These will be run:\n",
+        "  * Automatically, when the R session ends.\n",
+        "  * On demand, if you call `withr::deferred_run()`.\n",
+        "i Use `withr::deferred_clear()` to clear them without executing."
+      )
+    }
+    reg.finalizer(env, function(env) deferred_run(env), onexit = TRUE)
+  }
+
+  handler <- as.call(list(function() expr))
+
+  if (priority == "first") {
+    the$global_exits <- c(list(handler), handlers)
+  } else {
+    the$global_exits <- c(handlers, list(handler))
+  }
+
+  invisible(NULL)
 }
+
+the$global_exits <- list()
+
+# Evaluate `frames` lazily to avoid expensive `sys.frames()`
+# call for the default case of a local environment
+is_top_level_global_env <- function(envir, frames = sys.frames()) {
+  if (!identical(envir, globalenv())) {
+    return(FALSE)
+  }
+
+  # Check if another global environment is on the stack
+  !any(vapply(frames, identical, NA, globalenv()))
+}
+
+
+# This picks up knitr's first frame on the stack and registers the
+# handler there. To avoid mixing up knitr's own exit handlers with
+# ours, we don't hook directly but instead save the list of handlers
+# as an attribute on the frame environment. This allows `deferred_run()`
+# to run our handlers without running the knitr ones.
+defer_knitr <- function(expr, envir, priority = c("first", "last")) {
+  priority <- match.arg(priority, choices = c("first", "last"))
+
+  envir <- knitr_exit_frame(envir)
+  handler <- as.call(list(function() expr))
+
+  handlers <- knitr_handlers(envir)
+
+  # Add `on.exit` hook if run for first time
+  if (!length(handlers)) {
+    defer_knitr_run(envir)
+  }
+
+  if (priority == "first") {
+    handlers <- c(list(handler), handlers)
+  } else {
+    handlers <- c(handlers, list(handler))
+  }
+  attr(envir, "withr_knitr_handlers") <- handlers
+
+  invisible(NULL)
+}
+
+knitr_handlers <- function(envir) {
+  attr(envir, "withr_knitr_handlers") %||% list()
+}
+
+# Evaluate `handlers` lazily so we get the latest version
+defer_knitr_run <- function(
+  envir,
+  handlers = knitr_handlers(envir)
+) {
+  defer(envir = envir, {
+    for (expr in handlers) {
+      eval(expr, envir)
+    }
+  })
+}
+
+
+# Augment rlang with withr features such as knitr support
+on_load({
+  on_package_load("rlang", local({
+    if (is.null(getOption("withr:::inject_defer_override"))) {
+      ns <- asNamespace("rlang")
+
+      do.call("unlockBinding", list("defer", ns))
+      defer(lockBinding("defer", ns))
+
+      ns$defer <- defer
+    }
+  }))
+})

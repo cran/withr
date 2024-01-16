@@ -158,26 +158,19 @@ neatest(pi, 4)
 #    # imagine lots of code here
 #  }
 
-## ----eval = FALSE-------------------------------------------------------------
-#  library(withr)
-#  
-#  defer(print("hi"))
-#  #> Setting deferred event(s) on global environment.
-#  #>   * Execute (and clear) with `withr::deferred_run()`.
-#  #>   * Clear (without executing) with `withr::deferred_clear()`.
-#  
-#  pi
-#  #> [1] 3.141593
-#  
-#  # this adds another deferred event, but does not re-message
-#  local_digits(3)
-#  
-#  pi
-#  #> [1] 3.14
-#  
-#  deferred_run()
-#  #> [1] "hi"
-#  
-#  pi
-#  #> [1] 3.141593
+## -----------------------------------------------------------------------------
+library(withr)
+
+defer(print("hi"))
+
+pi
+
+# this adds another deferred event, but does not re-message
+local_digits(3)
+
+pi
+
+deferred_run()
+
+pi
 

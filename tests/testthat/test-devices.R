@@ -6,6 +6,7 @@ skip_if_needs_cairo <- function(fn) {
 }
 
 test_that("with_*device* functions create a plot file", {
+  skip_if_not_installed("lattice")
   # A plot
   p <- lattice::xyplot(y ~ x, data.frame(x = -2:2, y = dnorm(-2:2)))
 
@@ -40,6 +41,7 @@ test_that("with_*device* functions create a plot file", {
 })
 
 test_that("local_device functions create a plot file", {
+  skip_if_not_installed("lattice")
   # A plot
   p <- lattice::xyplot(y ~ x, data.frame(x = -2:2, y = dnorm(-2:2)))
 
@@ -74,4 +76,17 @@ test_that("local_device functions create a plot file", {
   }
 
   unlink(plot_dir)
+})
+
+test_that("multiple devices closed in correct order", {
+  dev1 <- local_pdf(tempfile())
+
+  local({
+    dev2 <- local_pdf(tempfile())
+
+    local(withr::local_pdf(tempfile()))
+    expect_equal(dev.cur(), dev2)
+  })
+
+  expect_equal(dev.cur(), dev1)
 })

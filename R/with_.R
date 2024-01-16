@@ -16,6 +16,8 @@ NULL
 #' @inheritParams rlang::args_dots_empty
 #'
 #' @param set `[function(...)]`\cr Function used to set the state.
+#'   The return value from this function should be the old state, which will
+#'   then be passed back into the `reset()` function to clean up the state.
 #'   The function can have arbitrarily many arguments, they will be replicated
 #'   in the formals of the returned function.
 #' @param reset `[function(x)]`\cr Function used to reset the state.
@@ -71,7 +73,7 @@ with_ <- function(set,
 
   if (length(fmls) > 0L) {
     # Called pass all extra formals on
-    called_fmls <- stats::setNames(lapply(names(fmls), as.symbol), names(fmls))
+    called_fmls <- setNames(lapply(names(fmls), as.symbol), names(fmls))
 
     # Special case for dots. If `set()` and/or `get()` take dots, it
     # is assumed they implement `options()`-like semantic: a list
