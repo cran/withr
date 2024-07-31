@@ -1,3 +1,8 @@
+# withr 3.0.1
+
+* Fixes for CRAN checks.
+
+
 # withr 3.0.0
 
 ## Performance of withr
@@ -5,9 +10,9 @@
 * `defer()` is now a thin wrapper around `base::on.exit()`. This is
   possible thanks to two contributions that we made to R 3.5:
 
-  - We added an argument for FIFO cleanup: `on.exit(after = FALSE)`.
+  - We added an argument for LIFO cleanup: `on.exit(after = FALSE)`.
   - Calling `sys.on.exit()` elsewhere than top-level didn't work. This
-    is needed for manual invokation with `deferred_run()`.
+    is needed for manual invocation with `deferred_run()`.
 
   Following this change, `defer()` is now much faster (although still
   slower than `on.exit()` which is a primitive function and about as
@@ -23,7 +28,7 @@
   `globalenv()` (the default), you now need to set
   `options(withr.hook_source = TRUE)` to get proper withr support
   (running `defer()` or `local_` functions at top-level of a script).
-  THis support is disabled by default in local environments to avoid a
+  This support is disabled by default in local environments to avoid a
   performance penalty in normal usage of withr features.
 
 
@@ -34,7 +39,7 @@
 
 * `deferred_run()` can now be run at any point in a knitr file (#235).
 
-,* `local_tempfile()` now writes `lines` in UTF-8 (#210) and always uses 
+* `local_tempfile()` now writes `lines` in UTF-8 (#210) and always uses 
   `\n` for newlines (#216).
 
 * `local_pdf()` and friends now correctly restore to the previously 
