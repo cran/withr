@@ -1,7 +1,7 @@
-847753789e845d35f6bc63f0b365fd78 *DESCRIPTION
+91c520e4556564923e02314c4bdc08bf *DESCRIPTION
 6d8b003cc83b1dfced7bd996b18429dc *LICENSE
 3604c48113b02b685fdd0eba1ee3e4d9 *NAMESPACE
-ab28428652bea5705bbe18861dc4f920 *NEWS.md
+d623d5ed2e86bece67f2dcaea04ebcd7 *NEWS.md
 a8c319403cd7313df6e13eb5255119c5 *R/aaa.R
 784b1643e80f7c88eefcabe9153e30d1 *R/collate.R
 faa95cf47bdfe8f3c777f1fa9c55151a *R/connection.R
@@ -12,7 +12,7 @@ cdcb6f69279f0b0e5d879df3e44b2935 *R/devices.R
 ae55b528da3d76997dea1096185a6109 *R/dir.R
 d5289f0538a2e8934e7f6be51c9b3276 *R/env.R
 edeafa0fcfe39f3431c21db135a8f4af *R/file.R
-94bbc521d187277e37ec8756f254a500 *R/language.R
+c0a242fb9aba6a5e1a0899435be5b2da *R/language.R
 e2a66843c9829f82ab5a4e8cf47e820b *R/libpaths.R
 62a78d4501dacc238a2068917f58840b *R/local_.R
 0aac668e9fa2f97b502dd56c5658c0d2 *R/locale.R
@@ -36,7 +36,7 @@ d028adee6f0ca7dd703f30662586361d *README.md
 477d48f8c01d804ce33db8d6037a78ed *build/vignette.rds
 7b827e9f1a5a6e2eac5275c4fdda8021 *inst/doc/withr.R
 30f0ed49972f6395a4b694e990c00e93 *inst/doc/withr.Rmd
-91ee7c1b1098f40c73c4138327c6a619 *inst/doc/withr.html
+ceb04265f7c2b0f7fdee3e1da76a601a *inst/doc/withr.html
 d8097e17c0878a2e34793357c888b814 *man/defer.Rd
 5a0a77f8dbce4ffeb23c692090b6ae3a *man/devices.Rd
 40af1efbfdf130062a304c44632ac021 *man/figures/README-unnamed-chunk-3-1.png
